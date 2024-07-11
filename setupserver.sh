@@ -1,48 +1,56 @@
-# installing docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-chmod +x get-docker.sh
-bash get-docker.sh
-
-# installing docker compose
-mkdir -p ~/.docker/cli-plugins/
-curl -SL https://github.com/docker/compose/releases/download/v2.28.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-chmod +x ~/.docker/cli-plugins/docker-compose
-
-# setting up .env
-
-cp .env-template .env
+# installing SteamCMD if it's not installed
+if [ "$(command -v steamcmd)" = "" ]
+then
+    sudo add-apt-repository multiverse; sudo dpkg --add-architecture i386; sudo apt update
+    sudo apt install steamcmd
+fi
 
 echo "Enter steam user, which will run arma 3 server:"
 read steam_user
+export STEAM_USER=$steam_user
+
 echo "Enter user's password"
 read steam_password
-sed -i -e "s|{steam_user}|$steam_user|;s|{steam_password}|$steam_password|" .env
+export STEAM_PASSWORD=$steam_password
 
+mkdir arma3
+server_dir=$(realpath ./arma3)
+export SERVER_DIR=$server_dir
+
+# installing arma 3 server
+steamcmd +force_install_dir $server_dir +login $steam_user $steam_password +app_update 233780 validate +quit
+
+mkdir arma3/mods
+mkdir -p ~/".local/share/Arma 3" && mkdir -p ~/".local/share/Arma 3 - Other Profiles"
+
+# downloading mods
 echo "Do you want to use mods preset? y/n"
 read mods_preset_enabled
 if [ $mods_preset_enabled = "y" ]
 then
     echo "Enter a link to the mods preset you want to play with:"
-    read mods_preset
+    read mod_preset
+    export MOD_PRESET=$mod_preset
+
+    sudo apt install rename
+    python3 a3update.py
 fi
-sed -i -e "s|{mods_preset}|$mods_preset|" .env
 
-# setting up main.cfg
-cp configs/main-template.cfg configs/main.cfg
+# setting up and running web interface
 
-echo "Enter the password that will be used to log in as admin in-game:"
-read password_admin
-sed -i -e "s|{password_admin}|$password_admin|" configs/main.cfg
-
-echo "Do you want BattlEye enabled? y/n"
-read battleye_enabled
-if [ $battleye_enabled = "y" ]
+if [ "$(command -v npm)" = "" ]
 then
-    sed -i -e "s|{battleye_enabled}|1|" configs/main.cfg
-else
-    sed -i -e "s|{battleye_enabled}|0|" configs/main.cfg
+    sudo apt install nodejs
+    sudo apt install npm
 fi
 
-# running docker compose
-docker compose up -d
-echo "Docker Container for Arma3Server has started in detached mode"
+if [ ! -d web_interface ]
+then
+    git clone https://github.com/Dahlgren/arma-server-web-admin web_interface
+    cp config.js.template web_interface/config.js
+else
+    echo "web_interface directory already exists, skipping cloning arma-server-web-admin..."
+fi
+
+npm install --prefix web_interface
+npm start --prefix web_interface
