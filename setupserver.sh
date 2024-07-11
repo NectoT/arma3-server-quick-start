@@ -43,5 +43,6 @@ else
     sed -i -e "s|{battleye_enabled}|0|" configs/main.cfg
 fi
 
-# running docker compose for the first time
-docker compose up
+# running docker compose
+docker compose up -d
+echo "Docker Container for Arma3Server has started in detached mode"
