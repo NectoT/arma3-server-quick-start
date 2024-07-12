@@ -118,8 +118,8 @@ def update_mods():
         while os.path.isdir(path) == False and tries < 10:
             log("Updating \"{}\" ({}) | {}".format(mod_name, mod_id, tries + 1))
 
-            steam_cmd_params  = " +login {} {}".format(STEAM_USER, STEAM_PASS)
-            steam_cmd_params += " +force_install_dir {}".format(A3_SERVER_DIR)
+            steam_cmd_params = " +force_install_dir {}".format(A3_SERVER_DIR)
+            steam_cmd_params += " +login {} {}".format(STEAM_USER, STEAM_PASS)
             steam_cmd_params += " +workshop_download_item {} {} validate".format(
                 A3_WORKSHOP_ID,
                 mod_id
@@ -154,7 +154,7 @@ def create_mod_symlinks():
             print(f"Mod '{mod_name}' does not exist! ({real_path})")
 #endregion
 
-log("Updating A3 server ({A3_SERVER_ID})")
+log(f"Updating A3 server ({A3_SERVER_ID})")
 update_server()
 
 log("Updating mods")
