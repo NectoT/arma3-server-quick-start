@@ -7,7 +7,7 @@
 ## Tools this project uses
 
 - SteamCMD
-- [a3update]() script to automatically download or update all mods from a given mod preset
+- [a3update](https://gist.github.com/marceldev89/12da69b95d010c8a810fd384cca8d02a#file-a3update-py) script to automatically download or update all mods from a given mod preset
 - [arma-server-web-admin](https://github.com/Dahlgren/arma-server-web-admin) for a web interface that lets you manage created servers
 
 ## Usage
