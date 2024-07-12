@@ -2,7 +2,7 @@
 
 *This project was tested on Ubuntu only, but should work on Debian.*
 
-*You should be able to use this project on other Linux distributions if you change apt package manager to the package manager available in your distro.*
+*You should be able to use this project on other Linux distributions if in `setupserver.sh` you change apt package manager to the package manager available in your distro.*
 
 ## Tools this project uses
 
